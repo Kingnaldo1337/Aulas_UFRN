@@ -1,6 +1,6 @@
 # 📊 Análise de Pontos de Função (APF)
 
-A Análise de Pontos de Função (APF) permite medir o tamanho funcional do sistema, considerando as funcionalidades implementadas na branch `feat/issue20` do projeto Sis Estoque.
+A Análise de Pontos de Função (APF) permite medir o tamanho funcional do sistema, considerando as funcionalidades implementadas no projeto Sis Estoque.
 
 ## 🔍 Visão Geral do Sistema
 
@@ -22,34 +22,51 @@ Na contagem indicativa, consideramos apenas as Funções de Dados:
 
 ```mermaid
 erDiagram
-    Produto {
-        int id
+    USUARIO {
+        long id PK
+        string name
+        string login
+        string password
+        boolean isAdmin
+    }
+
+    CATEGORIA {
+        long id PK
         string nome
-        string descricao
+    }
+
+    PRODUTO {
+        long id PK
+        string nome
+        double preco
+        long id_categoria FK
+    }
+    CATEGORIA ||--o{ PRODUTO : "possui"
+
+    LOG {
+        long id PK
+        Date data_movimentacao
+        long id_estoque FK 
+    }
+
+    ESTOQUE {
+        long id PK
         int quantidade
-        float preco
+        long id_produto FK
     }
-    Categoria {
-        int id
-        string nome
-    }
-    Fornecedor {
-        int id
-        string nome
-        string contato
-    }
-    Produto }o--|| Categoria : pertence_a
-    Produto }o--|| Fornecedor : fornecido_por
+    ESTOQUE ||--o{ LOG : "possui"
+    ESTOQUE ||--|| PRODUTO : "tem"
+
+
 ```
 
 ### Tabela de Contagem Indicativa
 
 | Função de Dado  | Entidades Relacionadas       | Tamanho em PF |
 |-----------------|------------------------------|---------------|
-| ALI Produto     | Produto, Categoria, Fornecedor | 35 PF        |
-| AIE Categoria   | Categoria                    | 15 PF         |
-| AIE Fornecedor  | Fornecedor                   | 15 PF         |
-| **Total**       |                              | **65 PF**     |
+| ALI Produto     | Produto, Categoria, Estoque  | 35 PF         |
+| ALI Usuário     | Usuário, Log                 | 35 PF         |
+| **Total**       |                              | **70 PF**     |
 
 ## 📋 Contagem Detalhada
 
@@ -66,19 +83,16 @@ A contagem detalhada considera as Funções de Dados e as Funções de Transaç�
 | Descrição            | Tipo | ALR | DER | Complexidade | Tamanho em PF |
 |----------------------|------|-----|-----|--------------|---------------|
 | ALI Produto          | ALI  | 3   | 5   | Média        | 7 PF          |
-| AIE Categoria        | AIE  | 1   | 2   | Baixa        | 5 PF          |
-| AIE Fornecedor       | AIE  | 1   | 2   | Baixa        | 5 PF          |
+| ALI Usuário          | ALI  | 2   | 4   | Baixa        | 7 PF          |
 | Inserir Produto      | EE   | 3   | 4   | Média        | 4 PF          |
 | Atualizar Produto    | EE   | 3   | 4   | Média        | 4 PF          |
 | Consultar Produto    | CE   | 3   | 4   | Média        | 4 PF          |
-| Detalhar Produto     | CE   | 3   | 4   | Média        | 4 PF          |
-| Inserir Categoria    | EE   | 1   | 2   | Baixa        | 3 PF          |
-| Atualizar Categoria  | EE   | 1   | 2   | Baixa        | 3 PF          |
-| Consultar Categoria  | CE   | 1   | 2   | Baixa        | 3 PF          |
-| Inserir Fornecedor   | EE   | 1   | 2   | Baixa        | 3 PF          |
-| Atualizar Fornecedor | EE   | 1   | 2   | Baixa        | 3 PF          |
-| Consultar Fornecedor | CE   | 1   | 2   | Baixa        | 3 PF          |
-| **Total**            |      |     |     |              | **56 PF**     |
+| Inserir Usuário      | EE   | 1   | 3   | Baixa        | 3 PF          |
+| Atualizar Usuário    | EE   | 1   | 3   | Baixa        | 3 PF          |
+| Consultar Usuário    | CE   | 1   | 3   | Baixa        | 3 PF          |
+| Registrar Log        | EE   | 1   | 2   | Baixa        | 3 PF          |
+| Consultar Log        | CE   | 1   | 2   | Baixa        | 3 PF          |
+| **Total**            |      |     |     |              | **41 PF**     |
 
 ---
 
